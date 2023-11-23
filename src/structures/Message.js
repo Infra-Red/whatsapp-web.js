@@ -5,8 +5,9 @@ const MessageMedia = require('./MessageMedia');
 const Location = require('./Location');
 const Order = require('./Order');
 const Payment = require('./Payment');
+const { MessageTypes } = require('../util/Constants');
+const PollVote = require('./PollVote');
 const Reaction = require('./Reaction');
-const {MessageTypes} = require('../util/Constants');
 const {Contact} = require('./Contact');
 
 /**
@@ -277,6 +278,10 @@ class Message extends Base {
             this.allowMultipleAnswers = Boolean(!data.pollSelectableOptionsCount);
             this.pollInvalidated = data.pollInvalidated;
             this.isSentCagPollCreation = data.isSentCagPollCreation;
+            /** Current poll votes, refresh with Message.refreshPollVotes() */
+            this.pollVotes = data.pollVotes.map((pollVote) => {
+                return new PollVote(this.client, {...pollVote, pollCreationMessage: this});
+            });
 
             delete this._data.pollName;
             delete this._data.pollOptions;

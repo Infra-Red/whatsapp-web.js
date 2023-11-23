@@ -532,6 +532,10 @@ exports.LoadUtils = () => {
             msg.id = Object.assign({}, msg.id, { remote: msg.id.remote._serialized });
         }
 
+        if (msg.type == 'poll_creation') {
+            msg.pollVotes = window.Store.PollVote.getForParent(msg.id).getModelsArray().map(a => a.serialize());
+        }
+
         delete msg.pendingAckUpdate;
 
         return msg;

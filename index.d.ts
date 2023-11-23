@@ -891,6 +891,8 @@ declare namespace WAWebJS {
         pollName: string,
         /** Avaiaible poll voting options */
         pollOptions: string[],
+        /** The current poll votes, refresh with .refreshPollVotes() */
+        pollVotes: PollVote[],
         /** False for a single choice poll, true for a multiple choice poll */
         allowMultipleAnswers: boolean,
         /* 
@@ -938,6 +940,15 @@ declare namespace WAWebJS {
          * Gets the payment details associated with a given message
          */
         getPayment: () => Promise<Payment>,
+        /**
+         * Refreshes the current poll votes, only works with a poll_creation message
+         */
+        refreshPollVotes: () => Promise<void>,
+        /**
+         * Vote on the poll, only works with a poll_creation message
+         * @param {Array<string>} selectedOptions The selected options from .pollOptions
+         */
+        vote: (selectedOptions: string[]) => Promise<void>,
         /**
          * Gets the reactions associated with the given message
          */
@@ -1661,6 +1672,12 @@ declare namespace WAWebJS {
         msgId: MessageId
         senderId: string
         ack?: number
+    }
+
+    export class PollVote {
+        selectedOptions: string[]
+        sender: string
+        senderTimestampMs: number
     }
     
     export type ReactionList = {
